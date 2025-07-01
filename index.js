@@ -80,11 +80,13 @@ app.use('/images',express.static('upload/images'));
 // });
 // });
 
-app.post("/upload", upload.single("product"), (req, res) => {
-  res.json({
-    success: 1,
-    image_url: req.file.path, // this is the cloudinary URL
-  });
+app.post("/upload", upload.single("product"),async (req, res) => {
+  // res.json({
+  //   success: 1,
+  //   image_url: req.file.path, // this is the cloudinary URL
+  // });
+  const x = await cloudinary.uploader.upload(req.file.path)
+  console.log(x)
 });
 
 
