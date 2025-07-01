@@ -12,7 +12,12 @@ const { type } = require('os');
 
 
 app.use(express.json());
-app.use(cors());
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://e-commerce-frontend-theta-silk.vercel.app/', // Or '*', if testing
+  credentials: true
+}));
+// app.use(cors());
 
 // database connection with mongoDB Atlas
 
