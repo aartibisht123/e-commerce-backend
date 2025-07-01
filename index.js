@@ -12,7 +12,7 @@ const { type } = require('os');
 
 
 app.use(express.json());
-const cors = require('cors');
+// const cors = require('cors');
 app.use(cors({
   origin: 'https://e-commerce-frontend-theta-silk.vercel.app/', // Or '*', if testing
   credentials: true
