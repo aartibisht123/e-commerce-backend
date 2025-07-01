@@ -14,7 +14,7 @@ const { type } = require('os');
 app.use(express.json());
 // const cors = require('cors');
 app.use(cors({
-  origin: 'https://e-commerce-frontend-theta-silk.vercel.app/', // Or '*', if testing
+  origin: 'https://e-commerce-frontend-theta-silk.vercel.app', // Or '*', if testing
   credentials: true
 }));
 // app.use(cors());
@@ -52,7 +52,7 @@ app.use('/images',express.static('upload/images'));
 app.post("/upload",upload.single('product'),(req, res)=>{
 res.json({
     success:1,
-    image_url:`http://localhost:${port}/images/${req.file.filename}`
+    image_url:`https://e-commerce-backend-1-ix83.onrender.com/images/${req.file.filename}`
 });
 });
 
@@ -215,7 +215,7 @@ app.post('/login', async(req, res)=>{
         }
     }
     else{
-        res.json({success:false,erroes:"Worng Email Id"})
+        res.json({success:false,errors:"Worng Email Id"})
     }
 })
 
