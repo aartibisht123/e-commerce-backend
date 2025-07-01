@@ -9,6 +9,16 @@ const cors = require('cors');
 const { type } = require('os');
 // const { type } = require('os');
 
+require('dotenv').config(); // add this line at the top of the file
+
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 
 app.use(express.json());
@@ -36,25 +46,47 @@ app.get("/",(req,res)=>{
 
 //Image Storage Engine
 
-const storage = multer.diskStorage({
-    destination: './images',
-    filename:(req,file,cd)=>{
-        return cd(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
-    }
-})
+// const storage = multer.diskStorage({
+//     destination: './images',
+//     filename:(req,file,cd)=>{
+//         return cd(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+//     }
+// })
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'ecommerce',
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+  },
+});
+
+
+
 
 const upload = multer({storage:storage});
+
+
+
 
 //  serve images
 app.use('/images',express.static('upload/images'));
 
 //creating upload endpoint
-app.post("/upload",upload.single('product'),(req, res)=>{
-res.json({
-    success:1,
-    image_url:`https://e-commerce-backend-1-ix83.onrender.com/images/${req.file.filename}`
+// app.post("/upload",upload.single('product'),(req, res)=>{
+// res.json({
+//     success:1,
+//     image_url:`https://e-commerce-backend-1-ix83.onrender.com/images/${req.file.filename}`
+// });
+// });
+
+app.post("/upload", upload.single("product"), (req, res) => {
+  res.json({
+    success: 1,
+    image_url: req.file.path, // this is the cloudinary URL
+  });
 });
-});
+
 
 //Schema for creating products
 const Product = mongoose.model('Product' ,{
