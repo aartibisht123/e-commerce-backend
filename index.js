@@ -9,7 +9,7 @@ const cors = require('cors');
 const { type } = require('os');
 // const { type } = require('os');
 
-require('dotenv').config(); // add this line at the top of the file
+// require('dotenv').config(); // add this line at the top of the file
 
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
