@@ -3,16 +3,17 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
 const multer = require('multer');
-const path = require('path');
+
 const cors = require('cors');
 const { type } = require('os');
 // const { type } = require('os');
 
-// require('dotenv').config(); // add this line at the top of the file
-
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// Configuration
+require('dotenv').config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -22,12 +23,7 @@ cloudinary.config({
 
 
 app.use(express.json());
-// const cors = require('cors');
-app.use(cors({
-  origin: 'https://e-commerce-frontend-theta-silk.vercel.app', // Or '*', if testing
-  credentials: true
-}));
-// app.use(cors());
+app.use(cors());
 
 // database connection with mongoDB Atlas
 
@@ -47,7 +43,7 @@ app.get("/",(req,res)=>{
 //Image Storage Engine
 
 // const storage = multer.diskStorage({
-//     destination: './images',
+//     destination: './upload/images',
 //     filename:(req,file,cd)=>{
 //         return cd(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
 //     }
@@ -62,31 +58,20 @@ const storage = new CloudinaryStorage({
 });
 
 
-
-
 const upload = multer({storage:storage});
 
-
-
-
-//  serve images
-app.use('/images',express.static('upload/images'));
-
 //creating upload endpoint
-// app.post("/upload",upload.single('product'),(req, res)=>{
-// res.json({
-//     success:1,
-//     image_url:`https://e-commerce-backend-1-ix83.onrender.com/images/${req.file.filename}`
-// });
-// });
-
-app.post("/upload", upload.single("product"),async (req, res) => {
-  // res.json({
-  //   success: 1,
-  //   image_url: req.file.path, // this is the cloudinary URL
-  // });
-  const x = await cloudinary.uploader.upload(req.file.path)
-  console.log(x)
+app.post("/upload", upload.single("product"), async (req, res) => {
+  try {
+    const file = req.file;
+    res.json({
+      success: true,
+      image_url: file.path  // Cloudinary auto-uploads and gives secure URL
+    });
+  } catch (err) {
+    console.error("Cloudinary Upload Error:", err);
+    res.status(500).json({ success: false, error: "Image upload failed" });
+  }
 });
 
 
