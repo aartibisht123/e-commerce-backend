@@ -23,12 +23,9 @@ cloudinary.config({
 
 
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
 
-app.use(cors({
-  origin: ['https://e-commerce-frontend-theta-silk.vercel.app'], // or localhost during dev
-  credentials: true
-}));
+
 
 // database connection with mongoDB Atlas
 
